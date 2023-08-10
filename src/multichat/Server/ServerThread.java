@@ -85,15 +85,24 @@ public class ServerThread implements Runnable {
 
                 if (resultArray[0].equals("message")) {
                     String timeMessage = time();
+                    String id="";
                     if (resultArray[1].equals("send_to_group")) {
                         String sb = resultArray[2];
                         serverThreadBus.sendToGlobal(sb, user);
-                        statement.executeUpdate("insert into mychat values('" + user + "','" + sb + "','" + timeMessage + "','','group','')");
+                        ResultSet resultSet = statement.executeQuery("select id from myaccounts where Username='"+user+"'");
+                        if(resultSet.next()) {
+                        	id = resultSet.getString(1);
+                        }
+                        statement.executeUpdate("insert into mychat values('" + user + "','" + sb + "','" + timeMessage + "','','group','"+id+"')");
                     } else {
                         String receiver = resultArray[2];
                         String sb = resultArray[3];
                         serverThreadBus.sendToPerson(sb, user, receiver);
-                        statement.executeUpdate("insert into mychat values('" + user + "','" + sb + "','" + timeMessage + "','','" + receiver + "','')");
+                        ResultSet resultSet = statement.executeQuery("select id from myaccounts where Username='"+user+"'");
+                        if(resultSet.next()) {
+                        	id = resultSet.getString(1);
+                        }
+                        statement.executeUpdate("insert into mychat values('" + user + "','" + sb + "','" + timeMessage + "','','" + receiver + "','"+id+"')");
                     }
 
                 }
@@ -138,7 +147,7 @@ public class ServerThread implements Runnable {
 
                     } else {
                         String result3 = "";
-                        ResultSet resultSet3 = statement.executeQuery("select * from mychat where Sender in ('" + user + "','" + resultArray[1] + "')and ChatGroup in( '" + resultArray[1] + "','" + user + "') order by Time");
+                        ResultSet resultSet3 = statement.executeQuery("select * from mychat where Username in ('" + user + "','" + resultArray[1] + "')and ChatGroup in( '" + resultArray[1] + "','" + user + "') order by Time");
 
                         while (resultSet3.next()) {
                             if (resultSet3.getString(1).equals(user)) {
@@ -170,7 +179,7 @@ public class ServerThread implements Runnable {
                     if (resultSet.next()) {
                         out.writeUTF("already exist");
                     } else {
-                        statement.executeUpdate("insert into myaccounts values('" + userString1 + "','" + passString1 + "','')");
+                        statement.executeUpdate("insert into myaccounts values('" + userString1 + "','" + passString1 + "','',0)");
                         out.writeUTF("sucess");
                     }
                 }
