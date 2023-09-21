@@ -1,3 +1,4 @@
+CREATE DATABASE chatapplication;
 USE chatapplication;
 
 --
@@ -7,10 +8,10 @@ USE chatapplication;
 DROP TABLE IF EXISTS myaccounts;
 
 CREATE TABLE myaccounts (
-	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   	Username text NOT NULL,
   	Password text NOT NULL,
-  	Remarks text NOT NULL
+  	Remarks text NOT NULL,
+  	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY
 );
 
 
@@ -21,12 +22,12 @@ CREATE TABLE myaccounts (
 DROP TABLE IF EXISTS mychat;
 
 CREATE TABLE  mychat (
-	id INT NOT NULL ,
-	Sender text NOT NULL,
+	Username text NOT NULL,
 	Chat text NOT NULL,
 	Time text NOT NULL,
 	Type text NOT NULL,
 	ChatGroup text NOT NULL,
+	id INT NOT NULL ,
 	FOREIGN KEY (id) REFERENCES myaccounts(id)
 );
 
